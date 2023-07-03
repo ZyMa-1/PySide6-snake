@@ -3,7 +3,7 @@ from collections import deque
 from enum import Enum
 from typing import Tuple, Deque
 
-from PySide6.QtCore import QTimer, QPoint, QSize, QRect, Qt, Slot, Signal
+from PySide6.QtCore import QTimer, QPoint, QSize, QRect, Qt, Slot, Signal, QObject
 from PySide6.QtGui import QColor, QPainter, QFont
 from PySide6.QtWidgets import QWidget
 
@@ -28,8 +28,9 @@ CELL_SNAKE = "s"
 CELL_SNAKE_HEAD = "h"
 
 
-class SnakeGameWidget(QWidget):
+class SnakeLogic(QObject):
     score_changed = Signal(int)
+    game_over = Signal()
 
     class Direction(Enum):
         UP = 0
@@ -40,107 +41,142 @@ class SnakeGameWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.current_direction = SnakeLogic.Direction.RIGHT
+        self.score = 0
+        self.state = []
+        self.empty_cells = set()
+        self.snake: Deque[Tuple[int, int]] = deque()
+        self.fruit_cell: Tuple[int, int] = (-1, -1)
+
+    def initialize_new(self):
+        self.current_direction = SnakeLogic.Direction.RIGHT
+        self.score = 0
+        self.state = []
+        self.empty_cells = set()
+        self.snake: Deque[Tuple[int, int]] = deque()
+        self.fruit_cell: Tuple[int, int] = (-1, -1)
+
+        for row in range(ROWS):
+            new_row = []
+            for col in range(COLS):
+                new_row.append(CELL_GRASS)
+                self.empty_cells.add((row, col))
+            self.state.append(new_row)
+
+        self.generate_snake()
+        self.generate_fruit()
+
+    def generate_fruit(self):
+        self.fruit_cell = random.choice(list(self.empty_cells))
+        self.state[self.fruit_cell[0]][self.fruit_cell[1]] = CELL_FRUIT
+
+    def generate_snake(self):
+        self.snake.append((0, 0))
+        self.snake.append((0, 1))
+        self.snake.append((0, 2))
+        self.snake.append((0, 3))
+        for row, col in self.snake:
+            self.state[row][col] = CELL_SNAKE
+            self.empty_cells.remove((row, col))
+
+        self.state[self.snake[-1][0]][self.snake[-1][1]] = CELL_SNAKE_HEAD
+
+    def calculate_next_snake_head_position(self) -> Tuple[int, int]:
+        if self.current_direction == SnakeLogic.Direction.UP:
+            return self.snake[-1][0] - 1, self.snake[-1][1]
+        elif self.current_direction == SnakeLogic.Direction.DOWN:
+            return self.snake[-1][0] + 1, self.snake[-1][1]
+        elif self.current_direction == SnakeLogic.Direction.LEFT:
+            return self.snake[-1][0], self.snake[-1][1] - 1
+        elif self.current_direction == SnakeLogic.Direction.RIGHT:
+            return self.snake[-1][0], self.snake[-1][1] + 1
+
+    def calculate_next_turn_collision(self) -> bool:
+        next_snake_head_pos = self.calculate_next_snake_head_position()
+        if not (0 <= next_snake_head_pos[0] < COLS and 0 <= next_snake_head_pos[1] < ROWS):
+            return True
+
+        if next_snake_head_pos != self.snake[0] and \
+                self.state[next_snake_head_pos[0]][next_snake_head_pos[1]] == CELL_SNAKE:
+            return True
+
+        return False
+
+    def make_turn(self):
+        if self.calculate_next_turn_collision():
+            self.score = 0
+            self.score_changed.emit(self.score)
+            self.game_over.emit()
+            return
+
+        next_snake_head_pos = self.calculate_next_snake_head_position()
+        if self.state[next_snake_head_pos[0]][next_snake_head_pos[1]] != CELL_SNAKE:
+            self.empty_cells.remove(next_snake_head_pos)
+
+        if next_snake_head_pos == self.fruit_cell:
+            self.score += 1
+            self.score_changed.emit(self.score)
+
+            self.state[self.snake[-1][0]][self.snake[-1][1]] = CELL_SNAKE
+            self.snake.append(next_snake_head_pos)
+            self.state[self.snake[-1][0]][self.snake[-1][1]] = CELL_SNAKE_HEAD
+            self.generate_fruit()
+        else:
+            self.empty_cells.add(self.snake[0])
+            self.state[self.snake[0][0]][self.snake[0][1]] = CELL_GRASS
+            self.state[self.snake[-1][0]][self.snake[-1][1]] = CELL_SNAKE
+            self.snake.popleft()
+            self.snake.append(next_snake_head_pos)
+            self.state[self.snake[-1][0]][self.snake[-1][1]] = CELL_SNAKE_HEAD
+
+    def setDirection(self, value: Direction):
+        self.current_direction = value
+
+    def getDirection(self):
+        return self.current_direction
+
+    def getStateAt(self, row, col):
+        return self.state[row][col]
+
+
+class SnakeGameWidget(QWidget):
+    score_changed = Signal(int)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
         # Set size
         self.resize(QSize(MIN_W, MIN_H))
 
-        self._current_direction = SnakeGameWidget.Direction.RIGHT
+        self._snake_logic = SnakeLogic()
+        self._snake_logic.score_changed.connect(self.score_changed)
+        self._snake_logic.game_over.connect(self._stop_game)
+
         self._is_game_ready_to_start = True
         self._is_game_over = False
-        self._score = 0
         self._number_of_turns_in_current_tick = 0
-        self._state = []
-        self._empty_cells = set()
-        self._snake: Deque[Tuple[int, int]] = deque()
-        self._fruit_cell: Tuple[int, int]
+        self._game_over_timer_seconds_remaining = BETWEEN_GAME_COOLDOWN_SECONDS
 
         self._timer = QTimer(self)
         self._timer.setInterval(GAME_TICK)
         self._game_over_timer = QTimer(self)
         self._game_over_timer.setInterval(1000)
-        self._game_over_timer_seconds_remaining = BETWEEN_GAME_COOLDOWN_SECONDS
 
         self._timer.timeout.connect(self._make_turn)
         self._game_over_timer.timeout.connect(self._game_over_timer_slot)
         self._game_over_timer.setSingleShot(False)
 
-        self._initialize_field()
+        self._set_up_new_game()
 
     # :Logic functions:
 
-    def _initialize_field(self):
-        for row in range(ROWS):
-            new_row = []
-            for col in range(COLS):
-                new_row.append(CELL_GRASS)
-                self._empty_cells.add((row, col))
-            self._state.append(new_row)
-
-        self._generate_snake()
-        self._generate_fruit()
-
-    def _reset_game(self):
-        self._current_direction = SnakeGameWidget.Direction.RIGHT
+    def _set_up_new_game(self):
         self._is_game_ready_to_start = True
         self._is_game_over = False
         self._number_of_turns_in_current_tick = 0
         self._game_over_timer_seconds_remaining = BETWEEN_GAME_COOLDOWN_SECONDS
 
-        self._score = 0
-        self.score_changed.emit(self._score)
-
-        self._state = []
-        self._empty_cells = set()
-        self._snake: Deque[Tuple[int, int]] = deque()
-        self._fruit_cell: Tuple[int, int]
-
-    def _generate_fruit(self):
-        self._fruit_cell = random.choice(list(self._empty_cells))
-        self._state[self._fruit_cell[0]][self._fruit_cell[1]] = CELL_FRUIT
-
-    def _generate_snake(self):
-        self._snake.append((0, 0))
-        self._snake.append((0, 1))
-        self._snake.append((0, 2))
-        self._snake.append((0, 3))
-        for row, col in self._snake:
-            self._state[row][col] = CELL_SNAKE
-            self._empty_cells.remove((row, col))
-
-        self._state[self._snake[-1][0]][self._snake[-1][1]] = CELL_SNAKE_HEAD
-
-    def _calculate_next_snake_head_position(self) -> Tuple[int, int]:
-        if self._current_direction == SnakeGameWidget.Direction.UP:
-            return self._snake[-1][0] - 1, self._snake[-1][1]
-        elif self._current_direction == SnakeGameWidget.Direction.DOWN:
-            return self._snake[-1][0] + 1, self._snake[-1][1]
-        elif self._current_direction == SnakeGameWidget.Direction.LEFT:
-            return self._snake[-1][0], self._snake[-1][1] - 1
-        elif self._current_direction == SnakeGameWidget.Direction.RIGHT:
-            return self._snake[-1][0], self._snake[-1][1] + 1
-
-    def _calculate_next_turn_collision(self) -> bool:
-        next_snake_head_pos = self._calculate_next_snake_head_position()
-        if not (0 <= next_snake_head_pos[0] < COLS and 0 <= next_snake_head_pos[1] < ROWS):
-            return True
-
-        if next_snake_head_pos != self._snake[0] and \
-                self._state[next_snake_head_pos[0]][next_snake_head_pos[1]] == CELL_SNAKE:
-            return True
-
-        return False
-
-    # !Game control functions!
-
-    def _start_game(self):
-        self._timer.start()
-        self._is_game_ready_to_start = False
-        self.update()
-
-    def _stop_game(self):
-        self._timer.stop()
-        self._is_game_over = True
-        self._game_over_timer.start()
-        self.update()
+        self._snake_logic.initialize_new()
 
     # ?Some interaction stuff?
 
@@ -157,14 +193,14 @@ class SnakeGameWidget(QWidget):
 
         self._number_of_turns_in_current_tick += 1
 
-        if event.key() == Qt.Key.Key_Up and self._current_direction != SnakeGameWidget.Direction.DOWN:
-            self._current_direction = SnakeGameWidget.Direction.UP
-        elif event.key() == Qt.Key.Key_Down and self._current_direction != SnakeGameWidget.Direction.UP:
-            self._current_direction = SnakeGameWidget.Direction.DOWN
-        elif event.key() == Qt.Key.Key_Left and self._current_direction != SnakeGameWidget.Direction.RIGHT:
-            self._current_direction = SnakeGameWidget.Direction.LEFT
-        elif event.key() == Qt.Key.Key_Right and self._current_direction != SnakeGameWidget.Direction.LEFT:
-            self._current_direction = SnakeGameWidget.Direction.RIGHT
+        if event.key() == Qt.Key.Key_Up and self._snake_logic.getDirection() != SnakeLogic.Direction.DOWN:
+            self._snake_logic.setDirection(SnakeLogic.Direction.UP)
+        elif event.key() == Qt.Key.Key_Down and self._snake_logic.getDirection() != SnakeLogic.Direction.UP:
+            self._snake_logic.setDirection(SnakeLogic.Direction.DOWN)
+        elif event.key() == Qt.Key.Key_Left and self._snake_logic.getDirection() != SnakeLogic.Direction.RIGHT:
+            self._snake_logic.setDirection(SnakeLogic.Direction.LEFT)
+        elif event.key() == Qt.Key.Key_Right and self._snake_logic.getDirection() != SnakeLogic.Direction.LEFT:
+            self._snake_logic.setDirection(SnakeLogic.Direction.RIGHT)
 
         super().keyPressEvent(event)
 
@@ -224,24 +260,24 @@ class SnakeGameWidget(QWidget):
             for row in range(ROWS):
                 for col in range(COLS):
                     cell = self._cell_rect(row, col)
-                    if self._state[row][col] == CELL_GRASS:
+                    if self._snake_logic.getStateAt(row, col) == CELL_GRASS:
                         painter.fillRect(cell, GRASS_CELL_COLOR)
-                    elif self._state[row][col] == CELL_FRUIT:
+                    elif self._snake_logic.getStateAt(row, col) == CELL_FRUIT:
                         painter.fillRect(cell, FRUIT_COLOR)
-                    elif self._state[row][col] == CELL_SNAKE:
+                    elif self._snake_logic.getStateAt(row, col) == CELL_SNAKE:
                         painter.fillRect(cell, SNAKE_COLOR)
-                    elif self._state[row][col] == CELL_SNAKE_HEAD:
+                    elif self._snake_logic.getStateAt(row, col) == CELL_SNAKE_HEAD:
                         painter.fillRect(cell, SNAKE_HEAD_COLOR)
 
-            # Draw text
+                    # Draw text
 
-            if self._is_game_ready_to_start:
-                self._draw_start_game_text(painter)
+                    if self._is_game_ready_to_start:
+                        self._draw_start_game_text(painter)
 
-            if self._is_game_over:
-                self._draw_game_over_text(painter)
+                    if self._is_game_over:
+                        self._draw_game_over_text(painter)
 
-    # .Other overriden functions.
+                        # .Other overriden functions.
 
     def minimumSizeHint(self):
         return QSize(MIN_W, MIN_H)
@@ -266,7 +302,19 @@ class SnakeGameWidget(QWidget):
         self.grabKeyboard()
         super().focusInEvent(event)
 
-    # !!!Inner signals handlers!!!
+    # !!! Game function stuff !!!
+
+    def _start_game(self):
+        self._timer.start()
+        self._is_game_ready_to_start = False
+        self.update()
+
+    @Slot()
+    def _stop_game(self):
+        self._timer.stop()
+        self._is_game_over = True
+        self._game_over_timer.start()
+        self.update()
 
     @Slot()
     def _game_over_timer_slot(self):
@@ -275,39 +323,12 @@ class SnakeGameWidget(QWidget):
             self.update()
             return
 
-        self._reset_game()
-        self._is_game_ready_to_start = True
-        self._is_game_over = False
+        self._set_up_new_game()
         self._game_over_timer.stop()
-        self._initialize_field()
         self.update()
 
     @Slot()
     def _make_turn(self):
         self._number_of_turns_in_current_tick = 0
-
-        if self._calculate_next_turn_collision():
-            self._stop_game()
-            return
-
-        next_snake_head_pos = self._calculate_next_snake_head_position()
-        if self._state[next_snake_head_pos[0]][next_snake_head_pos[1]] != CELL_SNAKE:
-            self._empty_cells.remove(next_snake_head_pos)
-
-        if next_snake_head_pos == self._fruit_cell:
-            self._score += 1
-            self.score_changed.emit(self._score)
-
-            self._state[self._snake[-1][0]][self._snake[-1][1]] = CELL_SNAKE
-            self._snake.append(next_snake_head_pos)
-            self._state[self._snake[-1][0]][self._snake[-1][1]] = CELL_SNAKE_HEAD
-            self._generate_fruit()
-        else:
-            self._empty_cells.add(self._snake[0])
-            self._state[self._snake[0][0]][self._snake[0][1]] = CELL_GRASS
-            self._state[self._snake[-1][0]][self._snake[-1][1]] = CELL_SNAKE
-            self._snake.popleft()
-            self._snake.append(next_snake_head_pos)
-            self._state[self._snake[-1][0]][self._snake[-1][1]] = CELL_SNAKE_HEAD
-
+        self._snake_logic.make_turn()
         self.update()
