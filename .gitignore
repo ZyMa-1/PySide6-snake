@@ -1,2 +1,5 @@
 .idea/
 venv
+main.dist/
+main.build/
+main.onefile-build/
