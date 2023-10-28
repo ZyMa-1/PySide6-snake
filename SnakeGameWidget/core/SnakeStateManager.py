@@ -12,6 +12,9 @@ class SnakeStateManager(QObject):
 
     Parameters
     ----------
+    parent=None
+        Parent (QObject)
+
     between_game_cooldown_seconds : int
         Cooldown value in seconds between the 'GameOver' state and 'ReadyToStart' state.
 

@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, QSize, QRect, QPoint
+from PySide6.QtCore import Qt, QSize, QRect, QPoint, QObject
 from PySide6.QtGui import QFont, QPainter
 from PySide6.QtWidgets import QWidget
 
@@ -7,12 +7,15 @@ from .SnakePainterConfig import SnakePainterConfig
 from .enums import CellType, GameState
 
 
-class SnakePainter:
+class SnakePainter(QObject):
     """
     Class responsible for rendering the game visuals in a specified widget.
 
     Parameters
     ----------
+    parent=None
+        Parent (QObject)
+
     widget : QWidget
         The widget where the game visuals will be rendered.
 
@@ -27,7 +30,8 @@ class SnakePainter:
     paint(painter: QPainter)
         Renders the game visuals using the provided QPainter object.
     """
-    def __init__(self, *, widget: QWidget, snake_core: SnakeCore, snake_painter_config: SnakePainterConfig):
+    def __init__(self, parent=None, *, widget: QWidget, snake_core: SnakeCore, snake_painter_config: SnakePainterConfig):
+        super().__init__(parent)
         self.widget = widget
         self.snake_core = snake_core
         self.config = snake_painter_config
