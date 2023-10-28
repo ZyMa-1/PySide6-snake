@@ -177,5 +177,7 @@ class SnakeCore(QObject):
         direction
             The new direction to set for the snake.
         """
-        if direction is not self.direction.opposite():
-            self.direction = direction
+        if direction is self.direction.opposite():
+            return
+
+        self.direction = direction
