@@ -26,6 +26,12 @@ class SnakeCore(QObject):
     initialize_new()
          Initializes a new game and resets the game to its initial state, including the snake's direction and score.
 
+    pause_game()
+        Pauses the game by stopping all associated 'QTimer' objects.
+
+    unpause_game()
+        Unpauses the game by resuming all associated 'QTimer' objects.
+
     start_game()
         Starts the game, enabling the game timer to initiate turns and sets the game state to ongoing.
 
@@ -102,6 +108,26 @@ class SnakeCore(QObject):
         Stops the game by pausing the game timer.
         """
         self.turn_timer.stop()
+
+    def pause_game(self):
+        """
+        Pauses the game by stopping all associated 'QTimer' objects.
+
+        The game relies on 'QTimer' objects to manage its updates and turns.
+        Pausing the game requires halting all active timers,
+        ensuring that the game and its associated components come to a complete standstill.
+
+        This method enforces this rule throughout the classes managed by 'SnakeCore'.
+        """
+        self.turn_timer.stop()
+        self.snake_state_manager.pause_work()
+
+    def unpause_game(self):
+        """
+        Unpauses the game by resuming all associated 'QTimer' objects.
+        """
+        self.turn_timer.start()
+        self.snake_state_manager.unpause_work()
 
     @Slot()
     def _make_turn(self):

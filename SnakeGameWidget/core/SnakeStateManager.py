@@ -31,6 +31,12 @@ class SnakeStateManager(QObject):
         Decreases the current seconds remaining by 1.
         If the '_current_game_cooldown' is equal to 0, moves game state to 'ReadyToStart'.
 
+    pause_work()
+        Pause all the timer objects, so the class would not operate on anything by itself.
+
+    unpause_work()
+        Unpauses all the timer objects.
+
     get_state() -> GameState
         Get the current game state.
 
@@ -80,6 +86,18 @@ class SnakeStateManager(QObject):
 
         self._current_game_cooldown -= 1
         self.update_graphics.emit()
+
+    def pause_work(self):
+        """
+        Pauses all the timer objects, so the class would not operate on anything by itself.
+        """
+        self._game_cooldown_timer.stop()
+
+    def unpause_work(self):
+        """
+        Unpauses all the timer objects.
+        """
+        self._game_cooldown_timer.start()
 
     def get_state(self) -> GameState:
         """
