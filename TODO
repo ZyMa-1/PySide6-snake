@@ -1,1 +1,6 @@
-idk, better code possible?
+1. Add ability to manipulate amount of fruits (in code).
+2. Add ability to display "Hehehe" when fruit in some specific cell is eaten.
+3. Add ability to add another cell type and check collision between borders.
+4. Add ability to pause/unpause the game.
+
+That will conclude the ultimate test for my code scalability.

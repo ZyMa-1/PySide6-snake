@@ -8,18 +8,14 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLCDNumber, QLabel,
-    QLayout, QMainWindow, QMenuBar, QSizePolicy,
-    QStatusBar, QVBoxLayout, QWidget)
+from PySide6.QtCore import (QCoreApplication, QRect,
+                            QSize, Qt)
+from PySide6.QtGui import (QFont)
+from PySide6.QtWidgets import (QHBoxLayout, QLCDNumber, QLabel,
+                               QLayout, QMenuBar, QSizePolicy,
+                               QStatusBar, QVBoxLayout, QWidget)
 
-from SnakeGameWidget import SnakeGameWidget
+from SnakeGameWidget.SnakeGameWidget import SnakeGameWidget
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):

@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     app.setOrganizationName("ZyMa-1")
     app.setApplicationName("Snake game")
-    app.setApplicationVersion("1.0")
+    app.setApplicationVersion("2.0")
 
     window = MainWindow()
     window.show()
