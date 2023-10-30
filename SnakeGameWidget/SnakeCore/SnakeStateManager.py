@@ -1,6 +1,6 @@
 from PySide6.QtCore import QObject, QTimer, Signal, Slot
 
-from .enums import GameState
+from .core.enums import GameState
 
 
 class SnakeStateManager(QObject):

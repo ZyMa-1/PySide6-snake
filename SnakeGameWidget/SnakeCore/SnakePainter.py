@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QWidget
 
 from .SnakeCore import SnakeCore
 from .SnakePainterConfig import SnakePainterConfig
-from .enums import CellType, GameState
+from .core.enums import CellType, GameState
 
 
 class SnakePainter(QObject):

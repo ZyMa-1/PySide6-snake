@@ -3,7 +3,7 @@ from PySide6.QtGui import QKeyEvent
 
 from .SnakeField import SnakeField
 from .SnakeStateManager import SnakeStateManager
-from .enums import TurnResult, Direction, GameState
+from .core.enums import TurnResult, Direction, GameState
 
 
 class SnakeCore(QObject):

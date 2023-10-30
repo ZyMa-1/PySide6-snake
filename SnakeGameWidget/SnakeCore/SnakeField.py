@@ -1,8 +1,8 @@
 import random
 from typing import Dict, Set
 
-from .core import Cell, SnakeObject
-from .enums import CellType, Direction, TurnResult
+from .core.core import Cell, SnakeObject
+from .core.enums import CellType, Direction, TurnResult
 
 
 class SnakeField:

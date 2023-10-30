@@ -2,9 +2,9 @@ from PySide6.QtCore import QSize, Signal
 from PySide6.QtGui import QColor, QPainter
 from PySide6.QtWidgets import QWidget
 
-from .core.SnakeCore import SnakeCore
-from .core.SnakePainter import SnakePainter
-from .core.SnakePainterConfig import SnakePainterConfig
+from .SnakeCore.SnakeCore import SnakeCore
+from .SnakeCore.SnakePainter import SnakePainter
+from .SnakeCore.SnakePainterConfig import SnakePainterConfig
 
 MIN_W = 304
 MIN_H = 304
@@ -63,12 +63,6 @@ class SnakeGameWidget(QWidget):
 
         super().paintEvent(event)
 
-    def minimumSizeHint(self):
-        return QSize(MIN_W, MIN_H)
-
-    def sizeHint(self):
-        return QSize(MIN_W, MIN_H)
-
     def resizeEvent(self, event):
         # Proper square
         if self.width() > self.height():
@@ -81,6 +75,12 @@ class SnakeGameWidget(QWidget):
             self.resize(size, size)
 
         super().resizeEvent(event)
+
+    def minimumSizeHint(self):
+        return QSize(MIN_W, MIN_H)
+
+    def sizeHint(self):
+        return QSize(MIN_W, MIN_H)
 
     def focusInEvent(self, event):
         # Set focus whenever widget is available
