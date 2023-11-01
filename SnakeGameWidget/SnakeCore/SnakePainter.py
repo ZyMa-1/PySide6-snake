@@ -38,12 +38,12 @@ class SnakePainter(QObject):
 
     def _draw_start_game_text(self, painter):
         painter.setPen(Qt.black)
-        painter.setFont(QFont("Courier", self.widget.width() // 20, QFont.Bold))
+        painter.setFont(QFont("Courier", int(self.widget.width() / 100 * 5), QFont.Bold))
         painter.drawText(self.widget.rect(), Qt.AlignCenter, "Press any key to start")
 
     def _draw_game_over_text(self, painter):
         painter.setPen(Qt.black)
-        painter.setFont(QFont("Courier", self.widget.width() // 20, QFont.Bold))
+        painter.setFont(QFont("Courier", int(self.widget.width() / 100 * 5), QFont.Bold))
         painter.drawText(self.widget.rect(), Qt.AlignCenter,
                          f"Game Over.\n"
                          f"Try again in {self.snake_core.snake_state_manager.get_current_game_cooldown()} seconds")

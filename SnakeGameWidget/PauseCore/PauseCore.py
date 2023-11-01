@@ -40,15 +40,15 @@ class PauseCore(QObject):
         return super().eventFilter(obj, event)
 
     def _update_button_geometry(self):
-        button_font = QFont("Arial", int(self.widget.height() / 100 * 20))
+        button_font = QFont("Arial", int(self.widget.height() / 100 * 4))
         self.pause_button.setFont(button_font)
 
         font_metrics = QFontMetrics(self.pause_button.font())
         text_size = font_metrics.size(Qt.TextFlag.TextSingleLine, self.pause_button.text(), tabstops=0)
 
         # Set the fixed top-right corner position and the calculated size
-        top_right_x = int(self.widget.height() / 100 * 5)
-        top_right_y = int(self.widget.height() / 100 * 5)
+        top_right_x = int(self.widget.width() / 100 * 5)
+        top_right_y = int(self.widget.width() / 100 * 5)
 
         self.pause_button.setGeometry(
             top_right_x - text_size.width(), top_right_y, text_size.width(), text_size.height()
