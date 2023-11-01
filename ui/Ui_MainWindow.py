@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(322, 443)
+        MainWindow.resize(322, 475)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
@@ -70,6 +70,7 @@ class Ui_MainWindow(object):
 
         self.toggle_pause_button = PauseToggleButton(self.centralwidget)
         self.toggle_pause_button.setObjectName(u"toggle_pause_button")
+        self.toggle_pause_button.setFocusPolicy(Qt.NoFocus)
 
         self.horizontalLayout_2.addWidget(self.toggle_pause_button)
 
@@ -103,6 +104,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Score:", None))
-        self.toggle_pause_button.setText(QCoreApplication.translate("MainWindow", u"Pause/Resume btn", None))
+        self.toggle_pause_button.setText(QCoreApplication.translate("MainWindow", u"Pause", None))
     # retranslateUi
 

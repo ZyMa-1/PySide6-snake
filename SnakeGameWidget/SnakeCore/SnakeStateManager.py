@@ -1,3 +1,5 @@
+from typing import Dict
+
 from PySide6.QtCore import QObject, QTimer, Signal, Slot
 
 from .core.enums import GameState
@@ -90,17 +92,41 @@ class SnakeStateManager(QObject):
         self._current_game_cooldown -= 1
         self.update_graphics.emit()
 
-    def pause_work(self):
+    def pause_work(self) -> Dict[str, bool]:
         """
-        Pauses all the timer objects, so the class would not operate on anything by itself.
-        """
-        self._game_cooldown_timer.stop()
+        Pauses the class's timer objects, preventing them from operating.
 
-    def unpause_work(self):
+        Returns
+        -------
+        Dict[str, bool]
+            A dictionary containing the names of QTimer objects as keys and their 'isActive()' states as values.
+
+        Note
+        ----
+        Make sure to call 'unpause_work' to resume the timers when needed.
         """
-        Unpauses all the timer objects.
+        is_active = self._game_cooldown_timer.isActive()
+        if is_active:
+            self._game_cooldown_timer.stop()
+
+        return {"_game_cooldown_timer": is_active}
+
+    def unpause_work(self, paused_settings: Dict[str, bool]):
         """
-        self._game_cooldown_timer.start()
+        Unpauses the class's timer objects based on the provided settings.
+
+        Parameters
+        ----------
+        paused_settings : Dict[str, bool]
+            A dictionary containing the names of QTimer objects as keys and their 'isActive()' states as values.
+            This dictionary should typically be the result of a previous 'pause_work' call.
+
+        Note
+        ----
+        Ensure that you provide the correct 'paused_settings' dictionary obtained from a previous 'pause_work' call.
+        """
+        if paused_settings["_game_cooldown_timer"]:
+            self._game_cooldown_timer.start()
 
     def get_state(self) -> GameState:
         """

@@ -1,3 +1,5 @@
+from typing import Dict
+
 from PySide6.QtCore import QObject, Signal, QTimer, Slot, Qt
 from PySide6.QtGui import QKeyEvent
 
@@ -109,25 +111,45 @@ class SnakeCore(QObject):
         """
         self.turn_timer.stop()
 
-    def pause_game(self):
+    def pause_game(self) -> Dict[str, bool]:
         """
         Pauses the game by stopping all associated 'QTimer' objects.
 
-        The game relies on 'QTimer' objects to manage its updates and turns.
-        Pausing the game requires halting all active timers,
-        ensuring that the game and its associated components come to a complete standstill.
+        Returns
+        -------
+        Dict[str, bool]
+            A dictionary with the names of 'QTimer' objects as keys and their 'isActive()' states as values.
 
-        This method enforces this rule throughout the classes managed by 'SnakeCore'.
+        Note
+        ----
+        Make sure to call 'unpause_game' to resume the game when needed.
         """
-        self.turn_timer.stop()
-        self.snake_state_manager.pause_work()
+        is_active = self.turn_timer.isActive()
+        if is_active:
+            self.turn_timer.stop()
 
-    def unpause_game(self):
+        paused_settings = self.snake_state_manager.pause_work()
+        paused_settings["turn_timer"] = is_active
+        return paused_settings
+
+    def unpause_game(self, paused_settings: Dict[str, bool]):
         """
         Unpauses the game by resuming all associated 'QTimer' objects.
+
+        Parameters
+        ----------
+        paused_settings : Dict[str, bool]
+            A dictionary containing the names of 'QTimer' objects as keys and their 'isActive()' states as values.
+            Typically, this dictionary is the result of a previous 'pause_game' call.
+
+        Note
+        ----
+        Ensure that you provide the correct 'paused_settings' dictionary obtained from a previous 'pause_game' call.
         """
-        self.turn_timer.start()
-        self.snake_state_manager.unpause_work()
+        if paused_settings["turn_timer"]:
+            self.turn_timer.start()
+
+        self.snake_state_manager.unpause_work(paused_settings)
 
     @Slot()
     def _make_turn(self):

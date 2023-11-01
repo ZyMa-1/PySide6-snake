@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>322</width>
-    <height>443</height>
+    <height>475</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,8 +81,11 @@
       </item>
       <item>
        <widget class="PauseToggleButton" name="toggle_pause_button">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
         <property name="text">
-         <string>Pause/Resume btn</string>
+         <string>Pause</string>
         </property>
        </widget>
       </item>

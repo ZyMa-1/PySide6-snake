@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.ui.snake_game_widget.score_changed.connect(self.handle_score_changed)
-        self.ui.toggle_pause_button.set_snake_core(self.ui.snake_game_widget.snake_core)
+        self.ui.toggle_pause_button.set_snake_game_widget(self.ui.snake_game_widget)
 
     @Slot(int)
     def handle_score_changed(self, score: int):
