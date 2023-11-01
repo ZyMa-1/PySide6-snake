@@ -33,14 +33,15 @@ class SnakeStateManager(QObject):
     @Slot()
     _game_cooldown_timer_slot()
         Slot method connected to the game cooldown timer.
-        Decreases the current seconds remaining by 1.
-        If the '_current_game_cooldown' is equal to 0, moves game state to 'ReadyToStart'.
+        Decreases the '_current_game_cooldown' by 1.
+        If the '_current_game_cooldown' is equal to 0, changes game state to 'ReadyToStart' (from 'GameOver').
 
-    pause_work()
-        Pause all the timer objects, so the class would not operate on anything by itself.
+    pause_work() -> Dict[str, bool]
+        Pauses the class's timer objects, so the class would not operate on anything by itself.
+        Returns a dictionary containing the names of QTimer objects as keys and their 'isActive()' states as values.
 
-    unpause_work()
-        Unpauses all the timer objects.
+    unpause_work(paused_settings: Dict[str, bool])
+        Unpauses the class's timer objects based on the provided settings.
 
     get_state() -> GameState
         Get the current game state.
@@ -50,6 +51,7 @@ class SnakeStateManager(QObject):
 
     go_next(next_expected_state: GameState)
         Move on to the next game state.
+        It is necessary to specify 'next_expected_state' to prevent unexpected behaviour.
     """
     game_state_changed = Signal()
     update_graphics = Signal()
@@ -72,7 +74,8 @@ class SnakeStateManager(QObject):
         """
         Slot method connected to the game cooldown timer.
 
-        Decreases the current game cooldown timer value and changes the state when it reaches 0.
+        Decreases the '_current_game_cooldown' by 1.
+        If the '_current_game_cooldown' is equal to 0, changes game state to 'ReadyToStart' (from 'GameOver').
 
         Raises
         ------
@@ -94,7 +97,7 @@ class SnakeStateManager(QObject):
 
     def pause_work(self) -> Dict[str, bool]:
         """
-        Pauses the class's timer objects, preventing them from operating.
+        Pauses the class's timer objects, so the class would not operate on anything by itself.
 
         Returns
         -------
@@ -119,11 +122,11 @@ class SnakeStateManager(QObject):
         ----------
         paused_settings : Dict[str, bool]
             A dictionary containing the names of QTimer objects as keys and their 'isActive()' states as values.
-            This dictionary should typically be the result of a previous 'pause_work' call.
+            This dictionary should typically be the result of a previous 'pause_work()' call.
 
         Note
         ----
-        Ensure that you provide the correct 'paused_settings' dictionary obtained from a previous 'pause_work' call.
+        Ensure that you provide the correct 'paused_settings' dictionary obtained from a previous 'pause_work()' call.
         """
         if paused_settings["_game_cooldown_timer"]:
             self._game_cooldown_timer.start()
@@ -185,4 +188,4 @@ class SnakeStateManager(QObject):
             self._game_cooldown_timer.start()
 
         elif self._state is GameState.GameOver:
-            raise RuntimeError("Cannot call go_next when the state is GameOver")
+            raise RuntimeError("Cannot call go_next when the state is 'GameOver'")
