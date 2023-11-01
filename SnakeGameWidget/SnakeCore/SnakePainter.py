@@ -37,14 +37,14 @@ class SnakePainter(QObject):
         self.config = snake_painter_config
 
     def _draw_start_game_text(self, painter):
-        painter.setPen(Qt.black)
-        painter.setFont(QFont("Courier", int(self.widget.width() / 100 * 5), QFont.Bold))
-        painter.drawText(self.widget.rect(), Qt.AlignCenter, "Press any key to start")
+        painter.setPen(Qt.GlobalColor.black)
+        painter.setFont(QFont("Courier", int(self.widget.width() * 0.05), QFont.Bold))
+        painter.drawText(self.widget.rect(), Qt.AlignmentFlag.AlignCenter, "Press any key to start")
 
     def _draw_game_over_text(self, painter):
-        painter.setPen(Qt.black)
-        painter.setFont(QFont("Courier", int(self.widget.width() / 100 * 5), QFont.Bold))
-        painter.drawText(self.widget.rect(), Qt.AlignCenter,
+        painter.setPen(Qt.GlobalColor.black)
+        painter.setFont(QFont("Courier", int(self.widget.width() * 0.05), QFont.Bold))
+        painter.drawText(self.widget.rect(), Qt.AlignmentFlag.AlignCenter,
                          f"Game Over.\n"
                          f"Try again in {self.snake_core.snake_state_manager.get_current_game_cooldown()} seconds")
 
@@ -65,7 +65,7 @@ class SnakePainter(QObject):
         return QRect(pos, size)
 
     def paint(self, painter: QPainter):
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.save()
 
         # Draw field
 
@@ -98,3 +98,5 @@ class SnakePainter(QObject):
 
         if self.snake_core.snake_state_manager.get_state() is GameState.GameOver:
             self._draw_game_over_text(painter)
+
+        painter.restore()

@@ -16,10 +16,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLCDNumber, QLabel,
-    QLayout, QMainWindow, QMenuBar, QSizePolicy,
-    QSpacerItem, QStatusBar, QVBoxLayout, QWidget)
+    QLayout, QMainWindow, QMenuBar, QPushButton,
+    QSizePolicy, QSpacerItem, QStatusBar, QVBoxLayout,
+    QWidget)
 
-from SnakeGameWidget.PauseCore.PauseToggleButton import PauseToggleButton
 from SnakeGameWidget.SnakeGameWidget import SnakeGameWidget
 
 class Ui_MainWindow(object):
@@ -68,7 +68,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
-        self.toggle_pause_button = PauseToggleButton(self.centralwidget)
+        self.toggle_pause_button = QPushButton(self.centralwidget)
         self.toggle_pause_button.setObjectName(u"toggle_pause_button")
         self.toggle_pause_button.setFocusPolicy(Qt.NoFocus)
 

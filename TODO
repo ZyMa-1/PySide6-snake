@@ -2,5 +2,16 @@
 2. Add ability to display "Hehehe" when fruit in some specific cell is eaten.
 3. Add ability to add another cell type and check collision between borders.
 4. Add ability to pause/unpause the game.
+5. class PainterContext:
+    def __init__(self, painter):
+        self.painter = painter
 
-That will conclude the ultimate test for my code scalability.
+    def __enter__(self):
+        # Save the original state of the painter at the beginning of the block
+        self.painter.save()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        # Restore the painter to its original state at the end of the block
+        self.painter.restore()
+
+That will conclude the ultimate test for my code scalability (and retardability).

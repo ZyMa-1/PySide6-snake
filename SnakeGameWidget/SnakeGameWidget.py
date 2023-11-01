@@ -2,9 +2,11 @@ from PySide6.QtCore import QSize, Signal
 from PySide6.QtGui import QColor, QPainter
 from PySide6.QtWidgets import QWidget
 
+from .PauseCore.PauseCore import PauseCore
 from .SnakeCore.SnakeCore import SnakeCore
 from .SnakeCore.SnakePainter import SnakePainter
 from .SnakeCore.SnakePainterConfig import SnakePainterConfig
+from .PauseCore.PausePainter import PausePainter
 
 MIN_W = 304
 MIN_H = 304
@@ -31,7 +33,7 @@ class SnakeGameWidget(QWidget):
         # Set size
         self.resize(QSize(MIN_W, MIN_H))
 
-        self.snake_core = SnakeCore(parent,
+        self.snake_core = SnakeCore(self,
                                     rows=ROWS,
                                     cols=COLS,
                                     game_tick_milliseconds=GAME_TICK,
@@ -46,9 +48,18 @@ class SnakeGameWidget(QWidget):
             outer_border_thickness=OUTER_BORDER_THICKNESS
         )
 
-        self.snake_painter = SnakePainter(widget=self,
+        self.snake_painter = SnakePainter(self,
+                                          widget=self,
                                           snake_core=self.snake_core,
                                           snake_painter_config=self.snake_painter_config)
+
+        self.pause_core = PauseCore(self,
+                                    snake_game_widget=self,
+                                    snake_core=self.snake_core)
+
+        self.pause_painter = PausePainter(self,
+                                          widget=self,
+                                          pause_core=self.pause_core)
 
         self.snake_core.score_changed.connect(self.score_changed)
         self.snake_core.update_graphics.connect(self.update)
@@ -59,7 +70,9 @@ class SnakeGameWidget(QWidget):
 
     def paintEvent(self, event):
         with QPainter(self) as painter:
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
             self.snake_painter.paint(painter)
+            self.pause_painter.paint(painter)
 
         super().paintEvent(event)
 

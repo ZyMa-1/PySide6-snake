@@ -80,7 +80,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="PauseToggleButton" name="toggle_pause_button">
+       <widget class="QPushButton" name="toggle_pause_button">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
@@ -130,11 +130,6 @@
    <extends>QWidget</extends>
    <header>SnakeGameWidget/SnakeGameWidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>PauseToggleButton</class>
-   <extends>QPushButton</extends>
-   <header>SnakeGameWidget/PauseCore/PauseToggleButton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
