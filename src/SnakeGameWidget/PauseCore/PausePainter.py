@@ -20,14 +20,12 @@ class PausePainter(QObject):
         if not self.pause_core.is_paused:
             return
 
-        painter.save()
-
         # Black overlay
         painter.setOpacity(0.2)
         painter.fillRect(self.widget.rect(), QColor(0, 0, 0))
 
         # Pause indicator
-        painter.restore()
+        painter.setOpacity(1)
         widget_width = self.widget.width()
         widget_height = self.widget.height()
         line_x1 = int(widget_width - widget_width * 0.1)
@@ -44,5 +42,3 @@ class PausePainter(QObject):
         # Draw two parallel vertical lines
         painter.drawLine(line_x1, line_y, line_x1, line_y + line_thickness * 2)
         painter.drawLine(line_x2, line_y, line_x2, line_y + line_thickness * 2)
-
-        painter.restore()

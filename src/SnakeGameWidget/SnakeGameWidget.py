@@ -7,6 +7,7 @@ from .SnakeCore.SnakeCore import SnakeCore
 from .SnakeCore.SnakePainter import SnakePainter
 from .SnakeCore.SnakePainterConfig import SnakePainterConfig
 from .PauseCore.PausePainter import PausePainter
+from ..extras.PainterContext import PainterContext
 
 MIN_W = 304
 MIN_H = 304
@@ -71,8 +72,11 @@ class SnakeGameWidget(QWidget):
     def paintEvent(self, event):
         with QPainter(self) as painter:
             painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-            self.snake_painter.paint(painter)
-            self.pause_painter.paint(painter)
+            with PainterContext(painter) as ctx:
+                self.snake_painter.paint(ctx.painter)
+
+            with PainterContext(painter) as ctx:
+                self.pause_painter.paint(ctx.painter)
 
         super().paintEvent(event)
 
