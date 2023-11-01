@@ -8,13 +8,18 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QRect,
-                            QSize, Qt)
-from PySide6.QtGui import (QFont)
-from PySide6.QtWidgets import (QHBoxLayout, QLCDNumber, QLabel,
-                               QLayout, QMenuBar, QSizePolicy,
-                               QStatusBar, QVBoxLayout, QWidget)
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLCDNumber, QLabel,
+    QLayout, QMainWindow, QMenuBar, QSizePolicy,
+    QSpacerItem, QStatusBar, QVBoxLayout, QWidget)
 
+from SnakeGameWidget.PauseCore.PauseToggleButton import PauseToggleButton
 from SnakeGameWidget.SnakeGameWidget import SnakeGameWidget
 
 class Ui_MainWindow(object):
@@ -56,6 +61,21 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(-1, 0, -1, -1)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer)
+
+        self.toggle_pause_button = PauseToggleButton(self.centralwidget)
+        self.toggle_pause_button.setObjectName(u"toggle_pause_button")
+
+        self.horizontalLayout_2.addWidget(self.toggle_pause_button)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
+
         self.snake_game_widget = SnakeGameWidget(self.centralwidget)
         self.snake_game_widget.setObjectName(u"snake_game_widget")
         sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
@@ -83,5 +103,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Score:", None))
+        self.toggle_pause_button.setText(QCoreApplication.translate("MainWindow", u"Pause/Resume btn", None))
     # retranslateUi
 

@@ -62,6 +62,33 @@
      </layout>
     </item>
     <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="PauseToggleButton" name="toggle_pause_button">
+        <property name="text">
+         <string>Pause/Resume btn</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
      <widget class="SnakeGameWidget" name="snake_game_widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -98,8 +125,13 @@
   <customwidget>
    <class>SnakeGameWidget</class>
    <extends>QWidget</extends>
-   <header>SnakeGameWidget.h</header>
+   <header>SnakeGameWidget/SnakeGameWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PauseToggleButton</class>
+   <extends>QPushButton</extends>
+   <header>SnakeGameWidget/PauseCore/PauseToggleButton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
