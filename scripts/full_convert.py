@@ -18,6 +18,6 @@ if __name__ == "__main__":
     ################## UI ######################################
 
     input_path_1 = PROJECT_ROOT / "designer" / "MainWindow.ui"
-    output_path_1 = PROJECT_ROOT / "ui" / "Ui_MainWindow.py"
+    output_path_1 = PROJECT_ROOT / "src" / "ui" / "Ui_MainWindow.py"
 
     convert_ui(input_path_1, output_path_1)

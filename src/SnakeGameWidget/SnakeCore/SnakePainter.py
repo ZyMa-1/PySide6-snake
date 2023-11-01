@@ -9,7 +9,7 @@ from .core.enums import CellType, GameState
 
 class SnakePainter(QObject):
     """
-    Class responsible for rendering the game visuals in a specified widget.
+    Class responsible for rendering the game visuals on a specified widget.
 
     Parameters
     ----------
@@ -20,17 +20,19 @@ class SnakePainter(QObject):
         The widget where the game visuals will be rendered.
 
     snake_core : SnakeCore
-        An instance of the SnakeCore class.
+        An instance of the 'SnakeCore' class.
 
     snake_painter_config : SnakePainterConfig
-        Configuration for the SnakePainter, specifying visual settings such as colors and border thickness.
+        Configuration for the 'SnakePainter', specifying visual settings such as colors and border thickness.
 
     Methods
     -------
     paint(painter: QPainter)
         Renders the game visuals using the provided QPainter object.
     """
-    def __init__(self, parent=None, *, widget: QWidget, snake_core: SnakeCore, snake_painter_config: SnakePainterConfig):
+
+    def __init__(self, parent=None, *, widget: QWidget, snake_core: SnakeCore,
+                 snake_painter_config: SnakePainterConfig):
         super().__init__(parent)
         self.widget = widget
         self.snake_core = snake_core

@@ -1,7 +1,7 @@
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QMainWindow
 
-from ui.Ui_MainWindow import Ui_MainWindow
+from src.ui.Ui_MainWindow import Ui_MainWindow
 
 
 class MainWindow(QMainWindow):
