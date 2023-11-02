@@ -8,6 +8,7 @@ class PainterContext:
     def __enter__(self):
         # Save the original state of the painter at the beginning of the block
         self.painter.save()
+        return self.painter
 
     def __exit__(self, exc_type, exc_value, traceback):
         # Restore the painter to its original state at the end of the block

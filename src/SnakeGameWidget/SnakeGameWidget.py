@@ -72,11 +72,11 @@ class SnakeGameWidget(QWidget):
     def paintEvent(self, event):
         with QPainter(self) as painter:
             painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-            with PainterContext(painter) as ctx:
-                self.snake_painter.paint(ctx.painter)
+            with PainterContext(painter) as ctx_painter:
+                self.snake_painter.paint(ctx_painter)
 
-            with PainterContext(painter) as ctx:
-                self.pause_painter.paint(ctx.painter)
+            with PainterContext(painter) as ctx_painter:
+                self.pause_painter.paint(ctx_painter)
 
         super().paintEvent(event)
 
