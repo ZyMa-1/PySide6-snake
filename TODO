@@ -22,3 +22,22 @@ Field ideas here whatever:
    Get the FRUIT and not die (1 score).
 10. Cursed (your head gets tpd randomly on the field every 10th turn)
     Get 20 score.
+
+Main idea how to do that:
+
+1. Make a class that would load the field into the SnakeField class
+2. Make a Snake Game Widget Builder, so it would be easy to attach whatever 'Snake' classes to it.
+3. Make a game win condition function in 'SnakeCore'?
+
+Ideas for each individual game idea:
+
+1. Easy.
+2. Meeh, override collision detection function and thats all.
+3. Xddd, override the game turn function, and move the fruit in it. Maybe override fruit spawn function as well.
+4. Just override make turn and collision functions.
+5. Just fun mapping you know.
+6. The hardest yet, skip for now.
+7. Just, collision and make turn override, that is all.
+8. Additionally override __init__ and create the thing and every turn, move it to the left or to the right.
+9. Xddddm literall 19984 frfr.
+10. Ummmhm, override the make turn i guess.
