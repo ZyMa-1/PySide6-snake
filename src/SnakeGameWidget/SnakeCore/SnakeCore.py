@@ -28,11 +28,13 @@ class SnakeCore(QObject):
     initialize_new()
          Initializes a new game and resets the game to its initial state, including the snake's direction and score.
 
-    pause_game()
+    pause_game() -> Dict[str, bool]
         Pauses the game by stopping all associated 'QTimer' objects.
+        Returns a dictionary with the names of 'QTimer' objects as keys and their 'isActive()' states as values.
 
-    unpause_game()
+    unpause_game(paused_settings: Dict[str, bool])
         Unpauses the game by resuming all associated 'QTimer' objects.
+        Takes 'paused_settings' as a parameter.
 
     start_game()
         Starts the game, enabling the game timer to initiate turns and sets the game state to ongoing.

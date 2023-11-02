@@ -1,17 +1,24 @@
-1. Add ability to manipulate amount of fruits (in code).
-2. Add ability to display "Hehehe" when fruit in some specific cell is eaten.
-3. Add ability to add another cell type and check collision between borders.
-4. Add ability to pause/unpause the game.
-5. class PainterContext:
-    def __init__(self, painter):
-        self.painter = painter
+https://github.com/users/ZyMa-1/projects/1/views/1
 
-    def __enter__(self):
-        # Save the original state of the painter at the beginning of the block
-        self.painter.save()
+Field ideas here whatever:
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        # Restore the painter to its original state at the end of the block
-        self.painter.restore()
-
-That will conclude the ultimate test for my code scalability (and retardability).
+1. Simple snake game, 1 fruit.
+   Get 20 score.
+2. Snake game where snake can go through the walls.
+   Get 20 score.
+3. Snake game with kinky fruit that has 95% change of teleporting away when the snake gets close.
+   Get 1 score.
+4. Snake game with new custom cell type - blocks.
+   Get 20 score.
+5. Mini - Labyrinth (2x2 minimum)
+   Get 20 score.
+6. AI snake. The battle xD
+   Get 20 score first.
+7. New cell type - portals
+   Get 20 score.
+8. Moving horizontal thing (left, right, left, right idk)
+   Get 20 score.
+9. Labyrinth 1x1
+   Get the FRUIT and not die (1 score).
+10. Cursed (your head gets tpd randomly on the field every 10th turn)
+    Get 20 score.
